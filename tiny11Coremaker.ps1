@@ -45,12 +45,14 @@ Start-Sleep -Seconds 3
 		Write-Host "Mounting $isoPath using powershell"
 		Mount-DiskImage -ImagePath $isoPath
 		$DriveLetter = (Get-DiskImage $isoPath | Get-Volume).DriveLetter
+  		Write-Host "=-=01 DriveLetter = $DriveLetter"
 
 $mainOSDrive = $env:SystemDrive
 $hostArchitecture = $Env:PROCESSOR_ARCHITECTURE
 New-Item -ItemType Directory -Force -Path "$mainOSDrive\tiny11\sources" >null
 ### $DriveLetter = Read-Host "Please enter the drive letter for the Windows 11 image"
 $DriveLetter = $DriveLetter + ":"
+  		Write-Host "=-=02 DriveLetter = $DriveLetter"
 
 if ((Test-Path "$DriveLetter\sources\boot.wim") -eq $false -or (Test-Path "$DriveLetter\sources\install.wim") -eq $false) {
     if ((Test-Path "$DriveLetter\sources\install.esd") -eq $true) {
