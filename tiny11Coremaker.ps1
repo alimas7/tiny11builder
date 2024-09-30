@@ -48,7 +48,8 @@ Start-Sleep -Seconds 3
   		Write-Host "=-=01 DriveLetter = $DriveLetter"
 
   		Write-Host "=-=04 env = $env"
-$mainOSDrive = $env:SystemDrive
+### $mainOSDrive = $env:SystemDrive
+$mainOSDrive = "D:"
   		Write-Host "=-=03 mainOSDrive = $mainOSDrive"
 $hostArchitecture = $Env:PROCESSOR_ARCHITECTURE
 New-Item -ItemType Directory -Force -Path "$mainOSDrive\tiny11\sources" >null
