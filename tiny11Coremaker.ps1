@@ -39,7 +39,7 @@ $input = 'y'
 if ($input -eq 'y') {
     Write-Host "Off we go..."
 Start-Sleep -Seconds 3
-Clear-Host
+### Clear-Host
 
 		$isoPath = 'D:\a\Fido\Fido\Win11_23H2_English_x64v2.iso'
 		Write-Host "Mounting $isoPath using powershell"
