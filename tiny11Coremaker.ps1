@@ -52,6 +52,7 @@ $mainOSDrive = $env:SystemDrive
   		Write-Host "=-=03 mainOSDrive = $mainOSDrive"
 $hostArchitecture = $Env:PROCESSOR_ARCHITECTURE
 New-Item -ItemType Directory -Force -Path "$mainOSDrive\tiny11\sources" >null
+		Get-ChildItem -Recurse "$mainOSDrive\tiny11"
 ### $DriveLetter = Read-Host "Please enter the drive letter for the Windows 11 image"
 $DriveLetter = $DriveLetter + ":"
   		Write-Host "=-=02 DriveLetter = $DriveLetter"
