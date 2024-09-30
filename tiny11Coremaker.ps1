@@ -53,7 +53,7 @@ $mainOSDrive = "D:"
   		Write-Host "=-=03 mainOSDrive = $mainOSDrive"
 $hostArchitecture = $Env:PROCESSOR_ARCHITECTURE
 New-Item -ItemType Directory -Force -Path "$mainOSDrive\tiny11\sources" >null
-		Get-ChildItem -Recurse "$mainOSDrive\tiny11"
+###		Get-ChildItem -Recurse "$mainOSDrive\tiny11"
 ### $DriveLetter = Read-Host "Please enter the drive letter for the Windows 11 image"
 $DriveLetter = $DriveLetter + ":"
   		Write-Host "=-=02 DriveLetter = $DriveLetter"
@@ -75,8 +75,8 @@ if ((Test-Path "$DriveLetter\sources\boot.wim") -eq $false -or (Test-Path "$Driv
 
 Write-Host "Copying Windows image..."
 Copy-Item -Path "$DriveLetter\*" -Destination "$mainOSDrive\tiny11" -Recurse -Force > null
-  		Write-Host "=-=05 Recursively listing $mainOSDrive\tiny11"
-		Get-ChildItem -Recurse "$mainOSDrive\tiny11"
+###  		Write-Host "=-=05 Recursively listing $mainOSDrive\tiny11"
+###		Get-ChildItem -Recurse "$mainOSDrive\tiny11"
 Set-ItemProperty -Path "$mainOSDrive\tiny11\sources\install.esd" -Name IsReadOnly -Value $false > $null 2>&1
 Remove-Item "$mainOSDrive\tiny11\sources\install.esd" > $null 2>&1
 Write-Host "Copy complete!"
