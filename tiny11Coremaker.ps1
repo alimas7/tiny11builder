@@ -47,7 +47,9 @@ Start-Sleep -Seconds 3
 		$DriveLetter = (Get-DiskImage $isoPath | Get-Volume).DriveLetter
   		Write-Host "=-=01 DriveLetter = $DriveLetter"
 
+  		Write-Host "=-=04 env = $env"
 $mainOSDrive = $env:SystemDrive
+  		Write-Host "=-=03 mainOSDrive = $mainOSDrive"
 $hostArchitecture = $Env:PROCESSOR_ARCHITECTURE
 New-Item -ItemType Directory -Force -Path "$mainOSDrive\tiny11\sources" >null
 ### $DriveLetter = Read-Host "Please enter the drive letter for the Windows 11 image"
