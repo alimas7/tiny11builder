@@ -41,8 +41,7 @@ if ($input -eq 'y') {
 Start-Sleep -Seconds 3
 Clear-Host
 
-$isoPath = 'D:\a\Fido\Fido\Win11_23H2_English_x64v2.iso'
-
+		$isoPath = 'D:\a\Fido\Fido\Win11_23H2_English_x64v2.iso'
 		Write-Host "Mounting $isoPath using powershell"
 		Mount-DiskImage -ImagePath $isoPath
 		$DriveLetter = (Get-DiskImage $isoPath | Get-Volume).DriveLetter
@@ -177,7 +176,8 @@ foreach ($packagePattern in $packagePatterns) {
 }
 
 Write-Host "Do you want to enable .NET 3.5? (y/n)"
-$input = Read-Host
+### $input = Read-Host
+$input = 'y'
 
 # Check the user's input
 if ($input -eq 'y') {
