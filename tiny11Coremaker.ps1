@@ -31,19 +31,26 @@ if (! $myWindowsPrincipal.IsInRole($adminRole))
 Start-Transcript -Path "$PSScriptRoot\tiny11.log" 
 # Ask the user for input
 Write-Host "Welcome to tiny11 core builder! BETA 05-06-24"
-Write-Host "This script generates a significantly reduced Windows 11 image. However, it's not suitable for regular use due to its lack of serviceability - you can't add languages, updates, or features post-creation. tiny11 Core is not a full Windows 11 substitute but a rapid testing or development tool, potentially useful for VM environments."
-Write-Host "Do you want to continue? (y/n)"
-$input = Read-Host
+### Write-Host "This script generates a significantly reduced Windows 11 image. However, it's not suitable for regular use due to its lack of serviceability - you can't add languages, updates, or features post-creation. tiny11 Core is not a full Windows 11 substitute but a rapid testing or development tool, potentially useful for VM environments."
+### Write-Host "Do you want to continue? (y/n)"
+### $input = Read-Host
+$input = 'y'
 
 if ($input -eq 'y') {
     Write-Host "Off we go..."
 Start-Sleep -Seconds 3
 Clear-Host
 
+$isoPath = 'D:\a\Fido\Fido\Win11_23H2_English_x64v2.iso'
+
+		Write-Host "Mounting $isoPath using powershell"
+		Mount-DiskImage -ImagePath $isoPath
+		$DriveLetter = (Get-DiskImage $isoPath | Get-Volume).DriveLetter
+
 $mainOSDrive = $env:SystemDrive
 $hostArchitecture = $Env:PROCESSOR_ARCHITECTURE
 New-Item -ItemType Directory -Force -Path "$mainOSDrive\tiny11\sources" >null
-$DriveLetter = Read-Host "Please enter the drive letter for the Windows 11 image"
+### $DriveLetter = Read-Host "Please enter the drive letter for the Windows 11 image"
 $DriveLetter = $DriveLetter + ":"
 
 if ((Test-Path "$DriveLetter\sources\boot.wim") -eq $false -or (Test-Path "$DriveLetter\sources\install.wim") -eq $false) {
