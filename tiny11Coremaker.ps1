@@ -98,7 +98,7 @@ try {
 }
 New-Item -ItemType Directory -Force -Path "$mainOSDrive\scratchdir" > $null
 ###& dism /English "/mount-image" "/imagefile:$($env:SystemDrive)\tiny11\sources\install.wim" "/index:$index" "/mountdir:$($env:SystemDrive)\scratchdir"
-& dism /English "/mount-image" "/imagefile:$mainOSDrive\tiny11\sources\install.wim" "/index:$index" "/mountdir:$mainOSDrive\scratchdir"
+& dism /Quiet /English "/mount-image" "/imagefile:$mainOSDrive\tiny11\sources\install.wim" "/index:$index" "/mountdir:$mainOSDrive\scratchdir"
 
 ###$imageIntl = & dism /English /Get-Intl "/Image:$($env:SystemDrive)\scratchdir"
 $imageIntl = & dism /English /Get-Intl "/Image:$mainOSDrive\scratchdir"
