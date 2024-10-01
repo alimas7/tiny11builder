@@ -149,7 +149,7 @@ $packagesToRemove = $packages | Where-Object {
 foreach ($package in $packagesToRemove) {
     write-host "Removing $package :"
 ###    & 'dism' '/English' "/image:$($env:SystemDrive)\scratchdir" '/Remove-ProvisionedAppxPackage' "/PackageName:$package"
-    & 'dism' '/English' "/image:$mainOSDrive\scratchdir" '/Remove-ProvisionedAppxPackage' "/PackageName:$package"
+    & 'dism' '/Quiet' '/English' "/image:$mainOSDrive\scratchdir" '/Remove-ProvisionedAppxPackage' "/PackageName:$package"
 }
 
 Write-Host "Removing of system apps complete! Now proceeding to removal of system packages..."
@@ -187,7 +187,7 @@ foreach ($packagePattern in $packagePatterns) {
         $packageIdentity = ($package -split "\s+")[0]
 
         Write-Host "Removing $packageIdentity..."
-        & dism /image:$scratchDir /Remove-Package /PackageName:$packageIdentity 
+        & dism '/Quiet' /image:$scratchDir /Remove-Package /PackageName:$packageIdentity 
     }
 }
 
