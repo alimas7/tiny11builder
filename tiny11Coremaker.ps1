@@ -41,7 +41,7 @@ if ($input -eq 'y') {
 Start-Sleep -Seconds 3
 ### Clear-Host
 
-		$isoPath = 'D:\a\Fido\Fido\Win10_22H2_English_x64v1.iso' ### Win11_23H2_English_x64v2.iso'
+		$isoPath = 'D:\a\Fido\Fido\Win11_23H2_English_x64v2.iso' ### Win10_22H2_English_x64v1.iso ### Win11_23H2_English_x64v2.iso'
 		Write-Host "Mounting $isoPath using powershell"
 		Mount-DiskImage -ImagePath $isoPath
 		$DriveLetter = (Get-DiskImage $isoPath | Get-Volume).DriveLetter
@@ -77,8 +77,8 @@ Write-Host "Copying Windows image..."
 Copy-Item -Path "$DriveLetter\*" -Destination "$mainOSDrive\tiny11" -Recurse -Force > null
 ###  		Write-Host "=-=05 Recursively listing $mainOSDrive\tiny11"
 ###		Get-ChildItem -Recurse "$mainOSDrive\tiny11"
-Set-ItemProperty -Path "$mainOSDrive\tiny11\sources\install.esd" -Name IsReadOnly -Value $false > $null 2>&1
-Remove-Item "$mainOSDrive\tiny11\sources\install.esd" > $null 2>&1
+### Set-ItemProperty -Path "$mainOSDrive\tiny11\sources\install.esd" -Name IsReadOnly -Value $false > $null 2>&1
+### Remove-Item "$mainOSDrive\tiny11\sources\install.esd" > $null 2>&1
 Write-Host "Copy complete!"
 Start-Sleep -Seconds 2
 Clear-Host
