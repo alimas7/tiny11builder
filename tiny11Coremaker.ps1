@@ -31,32 +31,24 @@ if (! $myWindowsPrincipal.IsInRole($adminRole))
 Start-Transcript -Path "$PSScriptRoot\tiny11.log" 
 # Ask the user for input
 Write-Host "Welcome to tiny11 core builder! BETA 05-06-24"
-### Write-Host "This script generates a significantly reduced Windows 11 image. However, it's not suitable for regular use due to its lack of serviceability - you can't add languages, updates, or features post-creation. tiny11 Core is not a full Windows 11 substitute but a rapid testing or development tool, potentially useful for VM environments."
-### Write-Host "Do you want to continue? (y/n)"
-### $input = Read-Host
-$input = 'y'
+Write-Host "This script generates a significantly reduced Windows 11 image. However, it's not suitable for regular use due to its lack of serviceability - you can't add languages, updates, or features post-creation. tiny11 Core is not a full Windows 11 substitute but a rapid testing or development tool, potentially useful for VM environments."
+Write-Host "Do you want to continue? (y/n)"
+$input = 'y' #=-=Read-Host
 
 if ($input -eq 'y') {
     Write-Host "Off we go..."
 Start-Sleep -Seconds 3
-### Clear-Host
+Clear-Host
 
+$mainOSDrive = $env:SystemDrive
 		$isoPath = 'D:\a\Fido\Fido\Win11_23H2_English_x64v2.iso' ### Win10_22H2_English_x64v1.iso ### Win11_23H2_English_x64v2.iso'
 		Write-Host "Mounting $isoPath using powershell"
 		Mount-DiskImage -ImagePath $isoPath
 		$DriveLetter = (Get-DiskImage $isoPath | Get-Volume).DriveLetter
-  		Write-Host "=-=01 DriveLetter = $DriveLetter"
-
-  		Write-Host "=-=04 env = $env"
-### $mainOSDrive = $env:SystemDrive
-$mainOSDrive = "D:"
-  		Write-Host "=-=03 mainOSDrive = $mainOSDrive"
 $hostArchitecture = $Env:PROCESSOR_ARCHITECTURE
 New-Item -ItemType Directory -Force -Path "$mainOSDrive\tiny11\sources" >null
-###		Get-ChildItem -Recurse "$mainOSDrive\tiny11"
-### $DriveLetter = Read-Host "Please enter the drive letter for the Windows 11 image"
+#=-=$DriveLetter = Read-Host "Please enter the drive letter for the Windows 11 image"
 $DriveLetter = $DriveLetter + ":"
-  		Write-Host "=-=02 DriveLetter = $DriveLetter"
 
 if ((Test-Path "$DriveLetter\sources\boot.wim") -eq $false -or (Test-Path "$DriveLetter\sources\install.wim") -eq $false) {
     if ((Test-Path "$DriveLetter\sources\install.esd") -eq $true) {
@@ -75,20 +67,16 @@ if ((Test-Path "$DriveLetter\sources\boot.wim") -eq $false -or (Test-Path "$Driv
 
 Write-Host "Copying Windows image..."
 Copy-Item -Path "$DriveLetter\*" -Destination "$mainOSDrive\tiny11" -Recurse -Force > null
-###  		Write-Host "=-=05 Recursively listing $mainOSDrive\tiny11"
-###		Get-ChildItem -Recurse "$mainOSDrive\tiny11"
-### Set-ItemProperty -Path "$mainOSDrive\tiny11\sources\install.esd" -Name IsReadOnly -Value $false > $null 2>&1
-### Remove-Item "$mainOSDrive\tiny11\sources\install.esd" > $null 2>&1
+Set-ItemProperty -Path "$mainOSDrive\tiny11\sources\install.esd" -Name IsReadOnly -Value $false > $null 2>&1
+Remove-Item "$mainOSDrive\tiny11\sources\install.esd" > $null 2>&1
 Write-Host "Copy complete!"
 Start-Sleep -Seconds 2
-### Clear-Host
+Clear-Host
 Write-Host "Getting image information:"
 &  'dism' '/English' "/Get-WimInfo" "/wimfile:$mainOSDrive\tiny11\sources\install.wim"
-###$index = Read-Host "Please enter the image index"
-$index = 6
+$index = 6 #=-=Read-Host "Please enter the image index"
 Write-Host "Mounting Windows image. This may take a while."
-###$wimFilePath = "$($env:SystemDrive)\tiny11\sources\install.wim" 
-$wimFilePath = "$mainOSDrive\tiny11\sources\install.wim" 
+$wimFilePath = "$($env:SystemDrive)\tiny11\sources\install.wim" 
 & takeown "/F" $wimFilePath 
 & icacls $wimFilePath "/grant" "$($adminGroup.Value):(F)"
 try {
@@ -97,11 +85,9 @@ try {
     # This block will catch the error and suppress it.
 }
 New-Item -ItemType Directory -Force -Path "$mainOSDrive\scratchdir" > $null
-###& dism /English "/mount-image" "/imagefile:$($env:SystemDrive)\tiny11\sources\install.wim" "/index:$index" "/mountdir:$($env:SystemDrive)\scratchdir"
-& dism /English "/mount-image" "/imagefile:$mainOSDrive\tiny11\sources\install.wim" "/index:$index" "/mountdir:$mainOSDrive\scratchdir"
+& dism /English "/mount-image" "/imagefile:$($env:SystemDrive)\tiny11\sources\install.wim" "/index:$index" "/mountdir:$($env:SystemDrive)\scratchdir"
 
-###$imageIntl = & dism /English /Get-Intl "/Image:$($env:SystemDrive)\scratchdir"
-$imageIntl = & dism /English /Get-Intl "/Image:$mainOSDrive\scratchdir"
+$imageIntl = & dism /English /Get-Intl "/Image:$($env:SystemDrive)\scratchdir"
 $languageLine = $imageIntl -split '\n' | Where-Object { $_ -match 'Default system UI language : ([a-zA-Z]{2}-[a-zA-Z]{2})' }
 
 if ($languageLine) {
@@ -111,8 +97,7 @@ if ($languageLine) {
     Write-Host "Default system UI language code not found."
 }
 
-###$imageInfo = & 'dism' '/English' '/Get-WimInfo' "/wimFile:$($env:SystemDrive)\tiny11\sources\install.wim" "/index:$index"
-$imageInfo = & 'dism' '/English' '/Get-WimInfo' "/wimFile:$mainOSDrive\tiny11\sources\install.wim" "/index:$index"
+$imageInfo = & 'dism' '/English' '/Get-WimInfo' "/wimFile:$($env:SystemDrive)\tiny11\sources\install.wim" "/index:$index"
 $lines = $imageInfo -split '\r?\n'
 
 foreach ($line in $lines) {
@@ -133,8 +118,7 @@ if (-not $architecture) {
 
 Write-Host "Mounting complete! Performing removal of applications..."
 
-###$packages = & 'dism' '/English' "/image:$($env:SystemDrive)\scratchdir" '/Get-ProvisionedAppxPackages' |
-$packages = & 'dism' '/English' "/image:$mainOSDrive\scratchdir" '/Get-ProvisionedAppxPackages' |
+$packages = & 'dism' '/English' "/image:$($env:SystemDrive)\scratchdir" '/Get-ProvisionedAppxPackages' |
     ForEach-Object {
         if ($_ -match 'PackageName : (.*)') {
             $matches[1]
@@ -148,16 +132,14 @@ $packagesToRemove = $packages | Where-Object {
 }
 foreach ($package in $packagesToRemove) {
     write-host "Removing $package :"
-###    & 'dism' '/English' "/image:$($env:SystemDrive)\scratchdir" '/Remove-ProvisionedAppxPackage' "/PackageName:$package"
-    & 'dism' '/English' "/image:$mainOSDrive\scratchdir" '/Remove-ProvisionedAppxPackage' "/PackageName:$package"
+    & 'dism' '/English' "/image:$($env:SystemDrive)\scratchdir" '/Remove-ProvisionedAppxPackage' "/PackageName:$package"
 }
 
 Write-Host "Removing of system apps complete! Now proceeding to removal of system packages..."
 Start-Sleep -Seconds 1
-### Clear-Host
+Clear-Host
 
-###$scratchDir = "$($env:SystemDrive)\scratchdir"
-$scratchDir = "$mainOSDrive\scratchdir"
+$scratchDir = "$($env:SystemDrive)\scratchdir"
 $packagePatterns = @(
     "Microsoft-Windows-InternetExplorer-Optional-Package~31bf3856ad364e35",
     "Microsoft-Windows-Kernel-LA57-FoD-Package~31bf3856ad364e35~amd64",
@@ -192,15 +174,13 @@ foreach ($packagePattern in $packagePatterns) {
 }
 
 Write-Host "Do you want to enable .NET 3.5? (y/n)"
-### $input = Read-Host
-$input = 'y'
+$input = 'y' #=-=Read-Host
 
 # Check the user's input
 if ($input -eq 'y') {
     # If the user entered 'y', enable .NET 3.5 using DISM
     Write-Host "Enabling .NET 3.5..."
-###    & 'dism'  "/image:$scratchDir" '/enable-feature' '/featurename:NetFX3' '/All' "/source:$($env:SystemDrive)\tiny11\sources\sxs" 
-    & 'dism' "/image:$scratchDir" '/enable-feature' '/featurename:NetFX3' '/All' "/source:$mainOSDrive\tiny11\sources\sxs" 
+    & 'dism'  "/image:$scratchDir" '/enable-feature' '/featurename:NetFX3' '/All' "/source:$($env:SystemDrive)\tiny11\sources\sxs" 
     Write-Host ".NET 3.5 has been enabled."
 }
 elseif ($input -eq 'n') {
@@ -238,29 +218,29 @@ if ($architecture -eq 'amd64') {
 } else {
     Write-Host "Unknown architecture: $architecture"
 }
-& 'takeown' '/f' "$mainOSDrive\scratchdir\Windows\System32\Microsoft-Edge-Webview" '/r' >null
-& 'icacls' "$mainOSDrive\scratchdir\Windows\System32\Microsoft-Edge-Webview" '/grant' "$($adminGroup.Value):(F)" '/T' '/C' >null
+& 'takeown' '/f' "$mainOSDrive\scratchdir\Windows\System32\Microsoft-Edge-Webview" '/r'
+& 'icacls' "$mainOSDrive\scratchdir\Windows\System32\Microsoft-Edge-Webview" '/grant' "$($adminGroup.Value):(F)" '/T' '/C'
 Remove-Item -Path "$mainOSDrive\scratchdir\Windows\System32\Microsoft-Edge-Webview" -Recurse -Force
 Write-Host "Removing WinRE"
-& 'takeown' '/f' "$mainOSDrive\scratchdir\Windows\System32\Recovery" '/r' >null
-& 'icacls' "$mainOSDrive\scratchdir\Windows\System32\Recovery" '/grant' 'Administrators:F' '/T' '/C' >null
+& 'takeown' '/f' "$mainOSDrive\scratchdir\Windows\System32\Recovery" '/r'
+& 'icacls' "$mainOSDrive\scratchdir\Windows\System32\Recovery" '/grant' 'Administrators:F' '/T' '/C'
 Remove-Item -Path "$mainOSDrive\scratchdir\Windows\System32\Recovery" -Recurse -Force
 & 'takeown' '/f' "$mainOSDrive\scratchdir\Windows\System32\Microsoft-Edge-Webview" '/r' >null
 & 'icacls' "$mainOSDrive\scratchdir\Windows\System32\Microsoft-Edge-Webview" '/grant' "$($adminGroup.Value):(F)" '/T' '/C' >null
-###Remove-Item -Path "$mainOSDrive\scratchdir\Windows\System32\Microsoft-Edge-Webview" -Recurse -Force >null
+Remove-Item -Path "$mainOSDrive\scratchdir\Windows\System32\Microsoft-Edge-Webview" -Recurse -Force >null
 Write-Host "Removing OneDrive:"
 & 'takeown' '/f' "$mainOSDrive\scratchdir\Windows\System32\OneDriveSetup.exe" >null
 & 'icacls' "$mainOSDrive\scratchdir\Windows\System32\OneDriveSetup.exe" '/grant' "$($adminGroup.Value):(F)" '/T' '/C' >null
 Remove-Item -Path "$mainOSDrive\scratchdir\Windows\System32\OneDriveSetup.exe" -Force >null
 Write-Host "Removal complete!"
 Start-Sleep -Seconds 2
-### Clear-Host
+Clear-Host
 Write-Host "Taking ownership of the WinSxS folder. This might take a while..."
-& 'takeown' '/f' "$mainOSDrive\scratchdir\Windows\WinSxS" '/r' >null
-& 'icacls' "$mainOSDrive\scratchdir\Windows\WinSxS" '/grant' "$($adminGroup.Value):(F)" '/T' '/C' >null
+& 'takeown' '/f' "$mainOSDrive\scratchdir\Windows\WinSxS" '/r'
+& 'icacls' "$mainOSDrive\scratchdir\Windows\WinSxS" '/grant' "$($adminGroup.Value):(F)" '/T' '/C'
 Write-host "Complete!"
 Start-Sleep -Seconds 2
-### Clear-Host
+Clear-Host
 Write-Host "Preparing..."
 $folderPath = Join-Path -Path $mainOSDrive -ChildPath "\scratchdir\Windows\WinSxS_edit"
 $sourceDirectory = "$mainOSDrive\scratchdir\Windows\WinSxS"
@@ -307,7 +287,7 @@ if ($architecture -eq "amd64") {
         $sourceDirs = Get-ChildItem -Path $sourceDirectory -Filter $dir -Directory
         foreach ($sourceDir in $sourceDirs) {
             $destDir = Join-Path -Path $destinationDirectory -ChildPath $sourceDir.Name
-###            Write-Host "Copying $sourceDir.FullName to $destDir"
+            Write-Host "Copying $sourceDir.FullName to $destDir"
             Copy-Item -Path $sourceDir.FullName -Destination $destDir -Recurse -Force
         }
     }
@@ -354,7 +334,7 @@ foreach ($dir in $dirsToCopy) {
         $sourceDirs = Get-ChildItem -Path $sourceDirectory -Filter $dir -Directory
         foreach ($sourceDir in $sourceDirs) {
             $destDir = Join-Path -Path $destinationDirectory -ChildPath $sourceDir.Name
-###            Write-Host "Copying $sourceDir.FullName to $destDir"
+            Write-Host "Copying $sourceDir.FullName to $destDir"
             Copy-Item -Path $sourceDir.FullName -Destination $destDir -Recurse -Force
         }
     }  
@@ -520,9 +500,6 @@ function Enable-Privilege {
 }
 
 Enable-Privilege SeTakeOwnershipPrivilege
-###Write-Host "=-=EP01"
-###do {} until (Enable-Privilege SeTakeOwnershipPrivilege)
-###Write-Host "=-=EP02"
 
 $regKey = [Microsoft.Win32.Registry]::LocalMachine.OpenSubKey("zSOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tasks",[Microsoft.Win32.RegistryKeyPermissionCheck]::ReadWriteSubTree,[System.Security.AccessControl.RegistryRights]::TakeOwnership)
 $regACL = $regKey.GetAccessControl()
@@ -710,10 +687,9 @@ Remove-Item -Path "$mainOSDrive\tiny11\sources\install.wim" -Force >null
 Rename-Item -Path "$mainOSDrive\tiny11\sources\install2.wim" -NewName "install.wim" >null
 Write-Host "Windows image completed. Continuing with boot.wim."
 Start-Sleep -Seconds 2
-### Clear-Host
+Clear-Host
 Write-Host "Mounting boot image:"
-###$wimFilePath = "$($env:SystemDrive)\tiny11\sources\boot.wim" 
-$wimFilePath = "$mainOSDrive\tiny11\sources\boot.wim" 
+$wimFilePath = "$($env:SystemDrive)\tiny11\sources\boot.wim" 
 & takeown "/F" $wimFilePath >null
 & icacls $wimFilePath "/grant" "$($adminGroup.Value):(F)"
 Set-ItemProperty -Path $wimFilePath -Name IsReadOnly -Value $false
@@ -746,7 +722,7 @@ reg unload HKLM\zSOFTWARE
 reg unload HKLM\zSYSTEM >null
 Write-Host "Unmounting image..."
 & 'dism' '/English' '/unmount-image' "/mountdir:$mainOSDrive\scratchdir" '/commit'
-### Clear-Host
+Clear-Host
 Write-Host "Exporting ESD. This may take a while..."
 & dism /Export-Image /SourceImageFile:"$mainOSDrive\tiny11\sources\install.wim" /SourceIndex:1 /DestinationImageFile:"$mainOSDrive\tiny11\sources\install.esd" /Compress:recovery
 Remove-Item "$mainOSDrive\tiny11\sources\install.wim" > $null 2>&1
