@@ -200,7 +200,7 @@ if ($input -eq 'y') {
     # If the user entered 'y', enable .NET 3.5 using DISM
     Write-Host "Enabling .NET 3.5..."
 ###    & 'dism'  "/image:$scratchDir" '/enable-feature' '/featurename:NetFX3' '/All' "/source:$($env:SystemDrive)\tiny11\sources\sxs" 
-    & 'dism'  "/image:$scratchDir" '/enable-feature' '/featurename:NetFX3' '/All' "/source:$mainOSDrive\tiny11\sources\sxs" 
+    & 'dism' '/Quiet' "/image:$scratchDir" '/enable-feature' '/featurename:NetFX3' '/All' "/source:$mainOSDrive\tiny11\sources\sxs" 
     Write-Host ".NET 3.5 has been enabled."
 }
 elseif ($input -eq 'n') {
