@@ -256,7 +256,7 @@ Write-Host "Removal complete!"
 Start-Sleep -Seconds 2
 ### Clear-Host
 Write-Host "Taking ownership of the WinSxS folder. This might take a while..."
-& 'takeown' '/f' "$mainOSDrive\scratchdir\Windows\WinSxS" '/r'
+& 'takeown' '/f' "$mainOSDrive\scratchdir\Windows\WinSxS" '/r' >null
 & 'icacls' "$mainOSDrive\scratchdir\Windows\WinSxS" '/grant' "$($adminGroup.Value):(F)" '/T' '/C'
 Write-host "Complete!"
 Start-Sleep -Seconds 2
