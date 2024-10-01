@@ -700,9 +700,9 @@ Write-Host "Cleaning up image..."
 Write-Host "Cleanup complete."
 Write-Host ' '
 Write-Host "Unmounting image..."
-& 'dism' '/English' '/unmount-image' "/mountdir:$mainOSDrive\scratchdir" '/commit'
+& 'dism' '/Quiet' '/English' '/unmount-image' "/mountdir:$mainOSDrive\scratchdir" '/commit'
 Write-Host "Exporting image..."
-& 'dism' '/English' '/Export-Image' "/SourceImageFile:$mainOSDrive\tiny11\sources\install.wim" "/SourceIndex:$index" "/DestinationImageFile:$mainOSDrive\tiny11\sources\install2.wim" '/compress:max'
+& 'dism' '/Quiet' '/English' '/Export-Image' "/SourceImageFile:$mainOSDrive\tiny11\sources\install.wim" "/SourceIndex:$index" "/DestinationImageFile:$mainOSDrive\tiny11\sources\install2.wim" '/compress:max'
 Remove-Item -Path "$mainOSDrive\tiny11\sources\install.wim" -Force >null
 Rename-Item -Path "$mainOSDrive\tiny11\sources\install2.wim" -NewName "install.wim" >null
 Write-Host "Windows image completed. Continuing with boot.wim."
@@ -714,7 +714,7 @@ $wimFilePath = "$mainOSDrive\tiny11\sources\boot.wim"
 & takeown "/F" $wimFilePath >null
 & icacls $wimFilePath "/grant" "$($adminGroup.Value):(F)"
 Set-ItemProperty -Path $wimFilePath -Name IsReadOnly -Value $false
-& 'dism' '/English' '/mount-image' "/imagefile:$mainOSDrive\tiny11\sources\boot.wim" '/index:2' "/mountdir:$mainOSDrive\scratchdir"
+& 'dism' '/Quiet' '/English' '/mount-image' "/imagefile:$mainOSDrive\tiny11\sources\boot.wim" '/index:2' "/mountdir:$mainOSDrive\scratchdir"
 Write-Host "Loading registry..."
 reg load HKLM\zCOMPONENTS $mainOSDrive\scratchdir\Windows\System32\config\COMPONENTS
 reg load HKLM\zDEFAULT $mainOSDrive\scratchdir\Windows\System32\config\default
@@ -742,10 +742,10 @@ $regKey.Close()
 reg unload HKLM\zSOFTWARE
 reg unload HKLM\zSYSTEM >null
 Write-Host "Unmounting image..."
-& 'dism' '/English' '/unmount-image' "/mountdir:$mainOSDrive\scratchdir" '/commit'
+& 'dism' '/Quiet' '/English' '/unmount-image' "/mountdir:$mainOSDrive\scratchdir" '/commit'
 ### Clear-Host
 Write-Host "Exporting ESD. This may take a while..."
-& dism /Export-Image /SourceImageFile:"$mainOSDrive\tiny11\sources\install.wim" /SourceIndex:1 /DestinationImageFile:"$mainOSDrive\tiny11\sources\install.esd" /Compress:recovery
+& dism /Quiet /Export-Image /SourceImageFile:"$mainOSDrive\tiny11\sources\install.wim" /SourceIndex:1 /DestinationImageFile:"$mainOSDrive\tiny11\sources\install.esd" /Compress:recovery
 Remove-Item "$mainOSDrive\tiny11\sources\install.wim" > $null 2>&1
 Write-Host "The tiny11 image is now completed. Proceeding with the making of the ISO..."
 Write-Host "Copying unattended file for bypassing MS account on OOBE..."
