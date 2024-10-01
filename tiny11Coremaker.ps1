@@ -521,20 +521,20 @@ function Enable-Privilege {
 
 Enable-Privilege SeTakeOwnershipPrivilege
 
-$regKey = [Microsoft.Win32.Registry]::LocalMachine.OpenSubKey("zSOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tasks",[Microsoft.Win32.RegistryKeyPermissionCheck]::ReadWriteSubTree,[System.Security.AccessControl.RegistryRights]::TakeOwnership)
-$regACL = $regKey.GetAccessControl()
-$regACL.SetOwner($adminGroup)
-$regKey.SetAccessControl($regACL)
-$regKey.Close()
-Write-Host "Owner changed to Administrators."
-$regKey = [Microsoft.Win32.Registry]::LocalMachine.OpenSubKey("zSOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tasks",[Microsoft.Win32.RegistryKeyPermissionCheck]::ReadWriteSubTree,[System.Security.AccessControl.RegistryRights]::ChangePermissions)
-$regACL = $regKey.GetAccessControl()
-$regRule = New-Object System.Security.AccessControl.RegistryAccessRule ($adminGroup,"FullControl","ContainerInherit","None","Allow")
-$regACL.SetAccessRule($regRule)
-$regKey.SetAccessControl($regACL)
-Write-Host "Permissions modified for Administrators group."
-Write-Host "Registry key permissions successfully updated."
-$regKey.Close()
+###$regKey = [Microsoft.Win32.Registry]::LocalMachine.OpenSubKey("zSOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tasks",[Microsoft.Win32.RegistryKeyPermissionCheck]::ReadWriteSubTree,[System.Security.AccessControl.RegistryRights]::TakeOwnership)
+###$regACL = $regKey.GetAccessControl()
+###$regACL.SetOwner($adminGroup)
+###$regKey.SetAccessControl($regACL)
+###$regKey.Close()
+###Write-Host "Owner changed to Administrators."
+###$regKey = [Microsoft.Win32.Registry]::LocalMachine.OpenSubKey("zSOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tasks",[Microsoft.Win32.RegistryKeyPermissionCheck]::ReadWriteSubTree,[System.Security.AccessControl.RegistryRights]::ChangePermissions)
+###$regACL = $regKey.GetAccessControl()
+###$regRule = New-Object System.Security.AccessControl.RegistryAccessRule ($adminGroup,"FullControl","ContainerInherit","None","Allow")
+###$regACL.SetAccessRule($regRule)
+###$regKey.SetAccessControl($regACL)
+###Write-Host "Permissions modified for Administrators group."
+###Write-Host "Registry key permissions successfully updated."
+###$regKey.Close()
 
 Write-Host 'Deleting Application Compatibility Appraiser'
 reg delete "HKEY_LOCAL_MACHINE\zSOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tasks\{0600DD45-FAF2-4131-A006-0B17509B9F78}" /f
