@@ -84,7 +84,8 @@ Start-Sleep -Seconds 2
 ### Clear-Host
 Write-Host "Getting image information:"
 &  'dism' '/English' "/Get-WimInfo" "/wimfile:$mainOSDrive\tiny11\sources\install.wim"
-$index = Read-Host "Please enter the image index"
+###$index = Read-Host "Please enter the image index"
+$index = 6
 Write-Host "Mounting Windows image. This may take a while."
 ###$wimFilePath = "$($env:SystemDrive)\tiny11\sources\install.wim" 
 $wimFilePath = "$mainOSDrive\tiny11\sources\install.wim" 
