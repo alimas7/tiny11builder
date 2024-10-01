@@ -519,10 +519,10 @@ function Enable-Privilege {
  $type[0]::EnablePrivilege($processHandle, $Privilege, $Disable)
 }
 
-###Enable-Privilege SeTakeOwnershipPrivilege
-Write-Host "=-=EP01"
-do {} until (Enable-Privilege SeTakeOwnershipPrivilege)
-Write-Host "=-=EP02"
+Enable-Privilege SeTakeOwnershipPrivilege
+###Write-Host "=-=EP01"
+###do {} until (Enable-Privilege SeTakeOwnershipPrivilege)
+###Write-Host "=-=EP02"
 
 $regKey = [Microsoft.Win32.Registry]::LocalMachine.OpenSubKey("zSOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tasks",[Microsoft.Win32.RegistryKeyPermissionCheck]::ReadWriteSubTree,[System.Security.AccessControl.RegistryRights]::TakeOwnership)
 $regACL = $regKey.GetAccessControl()
